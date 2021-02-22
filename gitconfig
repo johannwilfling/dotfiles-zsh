@@ -1,0 +1,106 @@
+[user]
+	name = Johann Wilfling
+	email = johann.wilfling@gmail.com
+
+[alias]
+
+    #
+    # Add
+    #
+    a = add
+    aa = add -A .
+    
+    #
+    # Commit
+    #
+    cm = commit -m
+    amend = commit --amend -m
+    cm-save = !git add -A && git commit -m 'SAVEPOINT'
+    cm-wip = !git add -u && git commit -m "WIP"
+    cm-wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+    
+    #
+    # Checkout
+    #
+    co = checkout
+    cob = checkout -b
+    cop = checkout -p
+
+    #
+    # Status
+    #
+	s = status -s
+        
+    #
+    # Branch
+    #
+    b = branch
+    br = branch
+    br-remove-merged = !git branch --merged | grep -v '*' | xargs -n 1 git branch -d
+
+    #
+    # Stash
+    #
+    sl = stash list
+    sa = stash apply
+    ss = stash save
+
+    #
+    # Reset
+    #
+    reset = reset --soft HEAD^
+    reset-hard = reset --hard
+    unstage = reset --soft HEAD^
+    undo = reset HEAD~1 --mixed
+
+    #
+    # Log
+    #
+	# View abbreviated SHA, description, and history graph of the latest 20 commits
+	l = log --pretty=oneline -n 20 --graph --abbrev-commit
+    graph = log --oneline --graph --decorate
+    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    l = log --graph --date=short
+    changes = log --pretty=format:'%h %cr %cn %Cgreen%s%Creset' --name-status
+    short = log --pretty=format:'%h %cr %cn %Cgreen%s%Creset'
+    changelog = log --pretty=format:' * %s'
+	wu = log --stat origin..@{0}
+	tree = log --graph --decorate --pretty=oneline --abbrev-commit    
+
+    #
+    # Diff
+    #
+	d = diff
+	staged = diff --cached    
+	# Show the diff between the latest commit and the current state
+	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+	# `git di $number` shows the diff between the state `$number` revisions ago and the current state
+	di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+    
+    #
+    # Find
+    #
+	# Find branches containing commit
+	fb = "!f() { git branch -a --contains $1; }; f"
+	# Find tags containing commit
+	ft = "!f() { git describe --always --contains $1; }; f"
+	# Find commits by source code
+	fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+	# Find commits by commit message
+	fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+
+	# Show verbose output about tags, branches or remotes
+	tags = tag -l
+	branches = branch -a
+	remotes = remote -v
+	# List contributors with number of commits
+	contributors = shortlog --summary --numbered
+
+	
+    # simple topic branch workflow with rebase
+	up = !CURRENT=$(git branch | grep '*' | awk '{print $2}') && git checkout master && git pull origin master && git checkout ${CURRENT} && git rebase master
+	ship = !CURRENT=$(git branch | grep '*' | awk '{print $2}') && git checkout master && git merge --no-ff ${CURRENT} && git push origin master
+
